@@ -19,8 +19,12 @@ interface Props {
 }
 
 export const Button: FC<Props> = ({ value, operator, addOperation }) => {
+  const handleClick = () => {
+    operator ? addOperation(`${value}operator`) : addOperation(value);
+  };
+
   return (
-    <ButtonWrapper $operator={operator} onClick={() => addOperation(value)}>
+    <ButtonWrapper $operator={operator} onClick={() => handleClick()}>
       {value}
     </ButtonWrapper>
   );

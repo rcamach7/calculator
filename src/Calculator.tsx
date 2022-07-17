@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Screen from "./components/Screen";
 import { Inputs } from "./components/Inputs";
@@ -36,6 +36,15 @@ function Calculator() {
       return { ...state, operations };
     });
   };
+
+  // useEffect(() => {
+  //   const calculateValue = () => {
+  //     const val = state.operations.reduce((total, currentOperator, i) => {
+  //       return "";
+  //     });
+  //   };
+  //   calculateValue();
+  // }, [state.operations]);
 
   useEffect(() => {
     console.log(state.operations);
