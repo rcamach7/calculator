@@ -4,6 +4,7 @@ import Screen from "./components/Screen";
 import { Inputs } from "./components/Inputs";
 import { Clear } from "./components/Clear";
 import { CalcState } from "./models";
+import { MyCalculator } from "./assets/myCalculator";
 
 const Backdrop = styled.div`
   height: 100vh;
@@ -28,41 +29,55 @@ function Calculator() {
 
   const clear = () => setState({ value: "0", operations: [] });
 
-  const addOperation = (operation: string) => {
-    let newOperations = [...state.operations];
-    newOperations.push(operation);
+  const isValidInput = (newInput: string) => {
+    let lastOperation = state.operations.length
+      ? state.operations[state.operations.length - 1]
+      : "";
 
-    const value = calculateValue(newOperations);
-    if (value.includes("operator")) {
-      setState((state) => {
-        let operations = [...state.operations];
-        operations.push(operation);
+    // Can't begin calculation with an operator
+    if (lastOperation === "" && newInput.includes("operator")) {
+      return false;
+    }
 
-        return { ...state, operations };
-      });
+    // No consecutive operators or negative/decimal inputs allowed.
+    if (lastOperation.includes("operator") && newInput.includes("operator")) {
+      return false;
+    } else if (lastOperation.includes("-") && newInput.includes("-")) {
+      return false;
+    } else if (lastOperation.includes(".") && newInput.includes(".")) {
+      return false;
     } else {
-      setState((state) => {
-        let operations = [...state.operations];
-        operations.push(operation);
-
-        return { value: value, operations };
-      });
+      return true;
     }
   };
 
+  const addOperation = (operation: string) => {
+    if (!isValidInput(operation)) return;
+
+    let newOperations = [...state.operations];
+    newOperations.push(operation);
+
+    setState((state) => {
+      let operations = [...state.operations];
+      operations.push(operation);
+
+      return { ...state, operations };
+    });
+  };
+
   const performOperation = (a: string, operation: string, b: string) => {
+    const calc = MyCalculator();
     let aNum = Number.parseInt(a);
     let bNum = Number.parseInt(b);
 
     if (operation === "+") {
-      return aNum + bNum + "";
+      return calc.add(aNum, bNum) + "";
     } else if (operation === "-") {
-      return "";
+      return calc.subtract(aNum, bNum) + "";
     } else if (operation === "*") {
-      return "";
+      return calc.multiply(aNum, bNum) + "";
     } else {
-      // Division
-      return "";
+      return calc.divide(aNum, bNum) + "";
     }
   };
 
@@ -88,6 +103,10 @@ function Calculator() {
 
     return val;
   };
+
+  useEffect(() => {
+    console.log(state.operations);
+  }, [state.operations]);
 
   return (
     <Backdrop>
