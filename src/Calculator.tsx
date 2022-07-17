@@ -4,7 +4,7 @@ import Screen from "./components/Screen";
 import { Inputs } from "./components/Inputs";
 import { ClearEnter } from "./components/ClearEnter";
 import { CalcState } from "./models";
-import { MyCalculator } from "./assets/myCalculator";
+import { isValidInput, performOperation } from "./assets/helpers";
 
 const Backdrop = styled.div`
   height: 100vh;
@@ -29,31 +29,9 @@ function Calculator() {
 
   const clear = () => setState({ value: "0", operations: [] });
 
-  const isValidInput = (newInput: string) => {
-    let lastOperation = state.operations.length
-      ? state.operations[state.operations.length - 1]
-      : "";
-
-    // Can't begin calculation with an operator
-    if (lastOperation === "" && newInput.includes("operator")) {
-      return false;
-    }
-
-    // No consecutive operators or negative/decimal inputs allowed.
-    if (lastOperation.includes("operator") && newInput.includes("operator")) {
-      return false;
-    } else if (lastOperation.includes("-") && newInput.includes("-")) {
-      return false;
-    } else if (lastOperation.includes(".") && newInput.includes(".")) {
-      return false;
-    } else {
-      return true;
-    }
-  };
-
   const addOperation = (operation: string) => {
     // Break away if an invalid input is pressed.
-    if (!isValidInput(operation)) return;
+    if (!isValidInput(operation, state.operations)) return;
 
     // Create a collection of up to date operations.
     let newOperations = [...state.operations];
@@ -67,22 +45,6 @@ function Calculator() {
 
       return { ...state, operations };
     });
-  };
-
-  const performOperation = (a: string, operation: string, b: string) => {
-    const calc = MyCalculator();
-    let aNum = Number.parseInt(a);
-    let bNum = Number.parseInt(b);
-
-    if (operation === "+") {
-      return calc.add(aNum, bNum) + "";
-    } else if (operation === "-") {
-      return calc.subtract(aNum, bNum) + "";
-    } else if (operation === "*") {
-      return calc.multiply(aNum, bNum) + "";
-    } else {
-      return calc.divide(aNum, bNum) + "";
-    }
   };
 
   const calculateValue = (operationsIn: string[]) => {
