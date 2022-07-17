@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Screen from "./components/Screen";
 import { Inputs } from "./components/Inputs";
-import { Clear } from "./components/Clear";
+import { ClearEnter } from "./components/ClearEnter";
 import { CalcState } from "./models";
 import { MyCalculator } from "./assets/myCalculator";
 
@@ -52,10 +52,14 @@ function Calculator() {
   };
 
   const addOperation = (operation: string) => {
+    // Break away if an invalid input is pressed.
     if (!isValidInput(operation)) return;
 
+    // Create a collection of up to date operations.
     let newOperations = [...state.operations];
     newOperations.push(operation);
+
+    console.log(calculateValue(newOperations));
 
     setState((state) => {
       let operations = [...state.operations];
@@ -83,11 +87,7 @@ function Calculator() {
 
   const calculateValue = (operationsIn: string[]) => {
     const val = operationsIn.reduce((curTotal, currentOperator, i) => {
-      if (currentOperator.includes("operator") && i === operationsIn.length) {
-        // Skip if last value entered is an operator
-        return curTotal;
-      } else if (curTotal.includes("operator")) {
-        // Perform operation of previous
+      if (curTotal.includes("operator")) {
         curTotal = performOperation(
           curTotal.slice(0, curTotal.indexOf("operator") - 1),
           curTotal[curTotal.indexOf("operator") - 1],
@@ -113,7 +113,7 @@ function Calculator() {
       <CalculatorWrapper>
         <Screen state={state} />
         <Inputs addOperation={addOperation} />
-        <Clear clear={clear} />
+        <ClearEnter clear={clear} addOperation={addOperation} />
       </CalculatorWrapper>
     </Backdrop>
   );

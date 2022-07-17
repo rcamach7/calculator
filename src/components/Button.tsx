@@ -10,6 +10,8 @@ const ButtonWrapper = styled.button<{ $operator: boolean }>`
 
   outline: none;
   border: none;
+  border-bottom: solid black 1px;
+  border-right: solid black 1px;
 `;
 
 interface Props {

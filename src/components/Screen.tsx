@@ -1,6 +1,7 @@
 import { FC } from "react";
 import styled from "styled-components";
 import { CalcState } from "../models";
+import "animate.css";
 
 const ScreenWrapper = styled.div`
   height: 100px;
