@@ -24,31 +24,70 @@ const CalculatorWrapper = styled.div`
 `;
 
 function Calculator() {
-  const [state, setState] = useState<CalcState>({ value: 0, operations: [] });
+  const [state, setState] = useState<CalcState>({ value: "0", operations: [] });
 
-  const clear = () => setState({ value: 0, operations: [] });
+  const clear = () => setState({ value: "0", operations: [] });
 
   const addOperation = (operation: string) => {
-    setState((state) => {
-      let operations = [...state.operations];
-      operations.push(operation);
+    let newOperations = [...state.operations];
+    newOperations.push(operation);
 
-      return { ...state, operations };
-    });
+    const value = calculateValue(newOperations);
+    if (value.includes("operator")) {
+      setState((state) => {
+        let operations = [...state.operations];
+        operations.push(operation);
+
+        return { ...state, operations };
+      });
+    } else {
+      setState((state) => {
+        let operations = [...state.operations];
+        operations.push(operation);
+
+        return { value: value, operations };
+      });
+    }
   };
 
-  // useEffect(() => {
-  //   const calculateValue = () => {
-  //     const val = state.operations.reduce((total, currentOperator, i) => {
-  //       return "";
-  //     });
-  //   };
-  //   calculateValue();
-  // }, [state.operations]);
+  const performOperation = (a: string, operation: string, b: string) => {
+    let aNum = Number.parseInt(a);
+    let bNum = Number.parseInt(b);
 
-  useEffect(() => {
-    console.log(state.operations);
-  }, [state.operations]);
+    if (operation === "+") {
+      return aNum + bNum + "";
+    } else if (operation === "-") {
+      return "";
+    } else if (operation === "*") {
+      return "";
+    } else {
+      // Division
+      return "";
+    }
+  };
+
+  const calculateValue = (operationsIn: string[]) => {
+    const val = operationsIn.reduce((curTotal, currentOperator, i) => {
+      if (currentOperator.includes("operator") && i === operationsIn.length) {
+        // Skip if last value entered is an operator
+        return curTotal;
+      } else if (curTotal.includes("operator")) {
+        // Perform operation of previous
+        curTotal = performOperation(
+          curTotal.slice(0, curTotal.indexOf("operator") - 1),
+          curTotal[curTotal.indexOf("operator") - 1],
+          currentOperator
+        );
+      } else {
+        // Add current number to previous number
+        curTotal = curTotal + currentOperator;
+      }
+
+      return curTotal;
+    }, "");
+
+    return val;
+  };
 
   return (
     <Backdrop>

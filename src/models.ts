@@ -1,4 +1,4 @@
 export interface CalcState {
-  value: number;
+  value: string;
   operations: string[];
 }
