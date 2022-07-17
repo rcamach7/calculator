@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import styled from "styled-components";
 import { Button } from "./Button";
 
@@ -20,17 +20,35 @@ const InputWrapper = styled.div`
   }
 `;
 
-export const Inputs = () => {
+interface Props {
+  addOperation: (operation: string) => void;
+}
+
+export const Inputs: FC<Props> = ({ addOperation }) => {
   return (
     <InputWrapper>
       <div className="inputs">
         {buttons.map((value, i) => {
-          return <Button key={value + i} value={value} operator={false} />;
+          return (
+            <Button
+              key={value + i}
+              addOperation={addOperation}
+              value={value}
+              operator={false}
+            />
+          );
         })}
       </div>
       <div className="operators">
         {operators.map((value, i) => {
-          return <Button key={value + i} value={value} operator={true} />;
+          return (
+            <Button
+              key={value + i}
+              addOperation={addOperation}
+              value={value}
+              operator={true}
+            />
+          );
         })}
       </div>
     </InputWrapper>

@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import styled from "styled-components";
 
 const ClearWrapper = styled.button`
@@ -16,6 +16,10 @@ const ClearWrapper = styled.button`
   align-items: center;
 `;
 
-export const Clear = () => {
-  return <ClearWrapper>Clear</ClearWrapper>;
+interface Props {
+  clear: () => void;
+}
+
+export const Clear: FC<Props> = ({ clear }) => {
+  return <ClearWrapper onClick={() => clear()}>Clear</ClearWrapper>;
 };

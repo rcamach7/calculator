@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Screen from "./components/Screen";
 import { Inputs } from "./components/Inputs";
 import { Clear } from "./components/Clear";
+import { CalcState } from "./models";
 
 const Backdrop = styled.div`
   height: 100vh;
@@ -22,20 +23,30 @@ const CalculatorWrapper = styled.div`
   outline: auto;
 `;
 
-interface CalcState {
-  value: number;
-  operations: string[];
-}
-
 function Calculator() {
   const [state, setState] = useState<CalcState>({ value: 0, operations: [] });
+
+  const clear = () => setState({ value: 0, operations: [] });
+
+  const addOperation = (operation: string) => {
+    setState((state) => {
+      let operations = [...state.operations];
+      operations.push(operation);
+
+      return { ...state, operations };
+    });
+  };
+
+  useEffect(() => {
+    console.log(state.operations);
+  }, [state.operations]);
 
   return (
     <Backdrop>
       <CalculatorWrapper>
-        <Screen />
-        <Inputs />
-        <Clear />
+        <Screen state={state} />
+        <Inputs addOperation={addOperation} />
+        <Clear clear={clear} />
       </CalculatorWrapper>
     </Backdrop>
   );

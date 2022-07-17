@@ -1,7 +1,8 @@
+import { FC } from "react";
 import styled from "styled-components";
 
-const ButtonWrapper = styled.button<{ operator: boolean }>`
-  background-color: ${(props) => (props.operator ? "orange" : "")};
+const ButtonWrapper = styled.button<{ $operator: boolean }>`
+  background-color: ${(props) => (props.$operator ? "orange" : "")};
   width: 75px;
   height: 75px;
 
@@ -11,12 +12,16 @@ const ButtonWrapper = styled.button<{ operator: boolean }>`
   border: none;
 `;
 
-export const Button = ({
-  value,
-  operator,
-}: {
+interface Props {
   value: string;
   operator: boolean;
-}) => {
-  return <ButtonWrapper operator={operator}>{value}</ButtonWrapper>;
+  addOperation: (operation: string) => void;
+}
+
+export const Button: FC<Props> = ({ value, operator, addOperation }) => {
+  return (
+    <ButtonWrapper $operator={operator} onClick={() => addOperation(value)}>
+      {value}
+    </ButtonWrapper>
+  );
 };
