@@ -37,3 +37,31 @@ export const performOperation = (a: string, operation: string, b: string) => {
     return calc.divide(aNum, bNum) + "";
   }
 };
+
+function getOperator(input: string[]) {
+  if (input.includes("+operator")) return "+";
+  if (input.includes("-operator")) return "-";
+  if (input.includes("/operator")) return "/";
+  return "*";
+}
+
+export function getResult(input: string[]) {
+  let value = "";
+  if (input.indexOf("enter") === -1) {
+    value = input.reduce((total, current) => {
+      current.includes("operator") ? (total += current[0]) : (total += current);
+      return total;
+    });
+  } else {
+    value = input.reduce((total, current) => {
+      if (current.includes("enter")) return total;
+      return total + current;
+    });
+
+    let numberOne = value.substring(0, value.indexOf("operator") - 1);
+    let numberTwo = value.substring(value.indexOf("operator") + 8);
+    let operator = getOperator(input);
+    return performOperation(numberOne, operator, numberTwo);
+  }
+  return value;
+}

@@ -4,7 +4,7 @@ import Screen from "./components/Screen";
 import { Inputs } from "./components/Inputs";
 import { ClearEnter } from "./components/ClearEnter";
 import { CalcState } from "./models";
-import { isValidInput, performOperation } from "./assets/helpers";
+import { isValidInput, getResult } from "./assets/helpers";
 
 const Backdrop = styled.div`
   height: 100vh;
@@ -37,33 +37,21 @@ function Calculator() {
     let newOperations = [...state.operations];
     newOperations.push(operation);
 
-    console.log(calculateValue(newOperations));
-
     setState((state) => {
       let operations = [...state.operations];
       operations.push(operation);
 
-      return { ...state, operations };
+      let newValue = calculateValue(operations);
+
+      return {
+        operations: operation === "enter" ? [newValue] : operations,
+        value: newValue,
+      };
     });
   };
 
   const calculateValue = (operationsIn: string[]) => {
-    const val = operationsIn.reduce((curTotal, currentOperator, i) => {
-      if (curTotal.includes("operator")) {
-        curTotal = performOperation(
-          curTotal.slice(0, curTotal.indexOf("operator") - 1),
-          curTotal[curTotal.indexOf("operator") - 1],
-          currentOperator
-        );
-      } else {
-        // Add current number to previous number
-        curTotal = curTotal + currentOperator;
-      }
-
-      return curTotal;
-    }, "");
-
-    return val;
+    return getResult(operationsIn);
   };
 
   useEffect(() => {
